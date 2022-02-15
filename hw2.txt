@@ -1,3 +1,7 @@
+; Paige Mortensen
+; Hw 2 - Scheme
+; 2/14/22
+
 ; 1. a recursive Scheme function which returns a list identical to L except 
 ;    that every occurrence of x has been replaced with y
 (define (subst x y L)
