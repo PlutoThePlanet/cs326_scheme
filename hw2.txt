@@ -1,0 +1,171 @@
+; 1. a recursive Scheme function which returns a list identical to L except 
+;    that every occurrence of x has been replaced with y
+(define (subst x y L)
+    (if (null? L)
+        '()
+        (cons 
+            (if (equal? x (car L)) 
+                y
+                (car L)
+            )
+            (subst x y (cdr L))
+        )
+    )
+)
+(subst 'c 'k '(c o c o n u t))
+
+
+
+
+; 2. a recursive Scheme function which determines whether all elements of list 
+;    L are distinct (that is, not equal?).
+(define (member? x lst)
+    (cond 
+        ((null? lst) #f)
+        ((equal? x (car lst)) #t)
+        (else (member? x (cdr lst)))
+    )
+)
+(define (all-different? L)
+    (cond
+        ((null? L) #t)
+        ((member? (car L) (cdr L)) #f)
+        (else (all-different? (cdr L)))
+    )
+)
+(all-different? '(3 7 2 7))
+
+
+
+
+; 3. 
+(define T
+	'(13
+      	(5
+           (1 () ())
+           (8 ()
+				(9 () ())))
+		(22
+                (17 () ())
+                (25 () ()))
+    ) ; end tree define
+) ; end function tree define
+
+(define (left T)
+	(if (= (length T) 1)    ; if 1 elem in list this is a leaf
+		'()                 ; return empty list
+		(car (cdr T))       ; else return next element
+    )
+)
+
+(define (right T)
+	(if (= (length T) 1)    ; if 1 elem in list this is a leaf
+		'()                 ; return empty list
+		(car (cdr (cdr T))) ; else return last element
+    )
+)
+
+(define (val T)
+	(car T)
+)
+
+; (a) a recursive function (n-nodes T), which returns the number of nodes in the tree T
+(define (n-nodes T)
+	(cond ((null? T) 0) ; empty
+		(else (+ 1 (n-nodes (left  T)) (n-nodes (right T)))) ; add if a node is encountered
+    )
+)
+
+; (b) Write a recursive function (n-leaves T), which returns the number of leaves in the tree T
+(define (n-leaves T)
+	(cond
+		((null? T) 0) ; empty
+		((= (n-nodes T) 1) 1) ; is a leaf
+		((> (n-nodes T) 1) (+ (n-leaves (left  T)) (n-leaves (right T)))) ; not a leaf so check right and left for leaf, add if leaf
+	)
+)
+
+; (c) The height of a tree is defined as the maximum number of nodes on a path
+;     from the root to a leaf. Write a recursive function (height T), which
+;     returns the height of the tree T
+(define (height T)
+	(cond
+		((null? T) 0) ; empty
+		((> (n-leaves (left T)) (n-leaves (right T)))
+			(+ (height (left T)) 1)
+		)
+		((<= (n-leaves (left T)) (n-leaves (right T)))
+			(+ (height (right T)) 1)
+		)
+	)
+)
+
+; (d) Write a recursive function (postorder T), which returns the list of all elements
+;     in the tree T corresponding to a postorder traversal of the tree
+(define (postorder T)
+	(if (not (null? T))
+		(flatten (list (append (postorder (left T)) (postorder (right T))) (val T)))
+		'() ; return empty list
+	)
+)
+
+(n-nodes T)     ; a
+(n-leaves T)    ; b
+(height T)      ; c
+(postorder T)   ; d
+
+
+
+
+; 4. a recursive Scheme function (flatten L), which takes as arguments a list
+;    L (possibly containing sublists), and returns a list containing all 
+;    elements in L and its sublists, but all at the same level
+(define (flatten L)
+    (cond ((null? L) '())
+        ((not (pair? L)) (list L))  
+        (else (append
+            (flatten (car L))
+            (flatten (cdr L)))
+        )
+    )
+)
+
+; EC - 5. a recursive function (member-bst? V T), which determines whether V 
+;         appears as an element in the binary search tree T. Make sure you 
+;         actually use binary search.
+
+(define T
+	'(13
+      	(5
+           (1 () ())
+           (8 ()
+				(9 () ())))
+		(22
+                (17 () ())
+                (25 () ()))
+    ) ; end tree define
+) ; end function tree define
+
+(define (left T)
+	(if (= (length T) 1)    ; if 1 elem in list this is a leaf
+		'()                 ; return empty list
+		(car (cdr T))       ; else return next element
+    )
+)
+
+(define (right T)
+	(if (= (length T) 1)    ; if 1 elem in list this is a leaf
+		'()                 ; return empty list
+		(car (cdr (cdr T))) ; else return last element
+    )
+)
+
+(define (val T)
+	(car T)
+)
+
+(define (member-bst? V T)
+	(cond ((null? T) #f) ; empty
+		(else ((n-nodes (left  T)) (n-nodes (right T))))
+    )
+)
